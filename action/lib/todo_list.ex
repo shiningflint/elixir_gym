@@ -1,16 +1,11 @@
 defmodule TodoList do
   def new(), do: %{}
 
-  def add_entry(todo_list, date, title) do
-    Map.update(
-      todo_list,
-      date,
-      [title],
-      fn titles -> [ title|titles ] end
-    )
+  def add_entry(todo_list, entry) do
+    MultiDict.add(todo_list, entry.date, entry)
   end
 
   def entries(todo_list, date) do
-    Map.get(todo_list, date, [])
+    MultiDict.get(todo_list, date)
   end
 end
