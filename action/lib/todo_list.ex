@@ -3,19 +3,27 @@ defmodule TodoList do
 
   def new(), do: %TodoList{}
 
+  def new(entries \\ []) do
+    Enum.reduce(
+      entries,
+      %TodoList{},
+      fn entry, todo_list_acc ->
+        add_entry(todo_list_acc, entry)
+      end
+    )
+  end
+
   def add_entry(todo_list, entry) do
     entry = Map.put(entry, :id, todo_list.auto_id)
 
-    new_entries = Map.put(
-      todo_list.entries,
-      todo_list.auto_id,
-      entry
-    )
+    new_entries =
+      Map.put(
+        todo_list.entries,
+        todo_list.auto_id,
+        entry
+      )
 
-    %TodoList{todo_list |
-      entries: new_entries,
-      auto_id: todo_list.auto_id + 1
-    }
+    %TodoList{todo_list | entries: new_entries, auto_id: todo_list.auto_id + 1}
   end
 
   def entries(todo_list, date) do
@@ -28,6 +36,7 @@ defmodule TodoList do
     case Map.fetch(todo_list.entries, entry_id) do
       :error ->
         todo_list
+
       {:ok, old_entry} ->
         # new_entry = updater_fun.(old_entry)
         # new_entry = %{} = updater_fun.(old_entry)
